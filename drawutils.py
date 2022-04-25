@@ -294,8 +294,8 @@ def format_lower_pad_axis(ratio=True, xlabel=None, ylabel=None, xrange=None, yra
     y_titlesize   = kwargs.get('y_titlesize'  , 0.12)
     y_labelsize   = kwargs.get('y_labelsize'  , 0.12)
     x_titlesize   = kwargs.get('x_titlesize'  , 0.12)
-    x_labelsize   = kwargs.get('x_labelsize'  , 0.14)
-    xdivisions    = kwargs.get('xdivisions'   , 203)
+    x_labelsize   = kwargs.get('x_labelsize'  , 0.12)
+    xdivisions    = kwargs.get('xdivisions'   , 510)
     ydivisions    = kwargs.get('ydivisions'   , 504)
 
     if ay:
@@ -389,7 +389,7 @@ def latex_label(size, x, y, msg):
 #===================================================================================================
 
 #===================================================================================================
-def atlas_label(x=None, y=None, size=0.04, msg="Internal", ndc=True):
+def atlas_label(x, y, size=0.04, msg="Internal", ndc=True):
     lat = ROOT.TLatex()
     lat.SetTextFont(42)
     lat.SetTextSize(size)
@@ -397,5 +397,30 @@ def atlas_label(x=None, y=None, size=0.04, msg="Internal", ndc=True):
         lat.DrawLatexNDC(x, y, "#bf{#it{ATLAS}} "+msg)
     else:
         lat.DrawLatex(x, y, "#bf{#it{ATLAS}} "+msg)
+    return
+#===================================================================================================
+
+#===================================================================================================
+def draw_ratio_lines(ratio, yvals, xmin=None, xmax=None):
+
+    if not xmin and not xmax:
+        firstbin = ratio.GetXaxis().GetFirst()
+        lastbin  = ratio.GetXaxis().GetLast()
+        xmax     = ratio.GetXaxis().GetBinUpEdge(lastbin)
+        xmin     = ratio.GetXaxis().GetBinLowEdge(firstbin)
+
+    lines = [None]*len(yvals)
+    for i, y in enumerate(yvals):
+        lines[i] = ROOT.TLine(xmin, y, xmax, y)
+        ROOT.SetOwnership(lines[i], False)
+
+    lines[0].SetLineWidth(1)
+    lines[0].SetLineStyle(2)
+    for line in lines[1:]:
+        line.SetLineStyle(3)
+
+    for line in lines:
+        line.AppendPad()
+        line.Draw()
     return
 #===================================================================================================
