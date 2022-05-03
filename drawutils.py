@@ -427,3 +427,85 @@ def draw_ratio_lines(ratio, yvals, xmin=None, xmax=None):
         line.Draw()
     return
 #===================================================================================================
+
+#===================================================================================================
+def set_default_style():
+    ROOT.gStyle.SetPadTickX(1)
+    ROOT.gStyle.SetPadTickY(1)
+    ROOT.gStyle.SetFrameFillColor(0)
+    ROOT.gStyle.SetFrameBorderSize(0)
+    ROOT.gStyle.SetFrameBorderMode(0)
+    ROOT.gStyle.SetCanvasColor(0)
+    ROOT.gStyle.SetOptStat(0)
+    ROOT.gStyle.SetTitleBorderSize(0)
+    ROOT.gStyle.SetTitleFillColor(0)
+    ROOT.gStyle.SetTextFont(132)
+    ROOT.gStyle.SetLegendFont(132)
+    ROOT.gStyle.SetLabelFont(132, "XYZ")
+    ROOT.gStyle.SetTitleFont(132, "XYZ")
+    ROOT.gStyle.SetEndErrorSize(0)
+    ROOT.gStyle.SetPalette(71)
+    return
+#===================================================================================================
+
+#===================================================================================================
+def set_atlas_style():
+    ROOT.gStyle.SetPalette(71)
+
+    # use plain black on white colors
+    icol = 0
+    ROOT.gStyle.SetFrameBorderMode(icol)
+    ROOT.gStyle.SetFrameFillColor(icol)
+    ROOT.gStyle.SetCanvasBorderMode(icol)
+    ROOT.gStyle.SetCanvasColor(icol)
+    ROOT.gStyle.SetPadBorderMode(icol)
+    ROOT.gStyle.SetPadColor(icol)
+    ROOT.gStyle.SetStatColor(icol)
+
+    # set the paper & margin sizes
+    ROOT.gStyle.SetPaperSize(20,26)
+
+    # set margin sizes
+    ROOT.gStyle.SetPadTopMargin(0.05)
+    ROOT.gStyle.SetPadRightMargin(0.05)
+    ROOT.gStyle.SetPadBottomMargin(0.16)
+    ROOT.gStyle.SetPadLeftMargin(0.16)
+
+    # set title offsets (for axis label)
+    ROOT.gStyle.SetTitleXOffset(1.4)
+    ROOT.gStyle.SetTitleYOffset(1.4)
+
+    # use large fonts
+    font = 42 # Helvetica
+    tsize = 0.05
+    ROOT.gStyle.SetTextFont(font)
+    ROOT.gStyle.SetTextSize(tsize)
+
+    ROOT.gStyle.SetLabelFont(font, "x")
+    ROOT.gStyle.SetTitleFont(font, "x")
+    ROOT.gStyle.SetLabelFont(font, "y")
+    ROOT.gStyle.SetTitleFont(font, "y")
+    ROOT.gStyle.SetLabelFont(font, "z")
+    ROOT.gStyle.SetTitleFont(font, "z")
+
+    ROOT.gStyle.SetLabelSize(tsize, "x")
+    ROOT.gStyle.SetTitleSize(tsize, "x")
+    ROOT.gStyle.SetLabelSize(tsize, "y")
+    ROOT.gStyle.SetTitleSize(tsize, "y")
+    ROOT.gStyle.SetLabelSize(tsize, "z")
+    ROOT.gStyle.SetTitleSize(tsize, "z")
+
+    # use bold lines and markers
+    ROOT.gStyle.SetMarkerStyle(20)
+    ROOT.gStyle.SetMarkerSize(1.2)
+    ROOT.gStyle.SetHistLineWidth(2)
+    ROOT.gStyle.SetLineStyleString(2, "[12 12]")
+    ROOT.gStyle.SetEndErrorSize(0.)
+
+    # do not display any of the standard histogram decorations
+    ROOT.gStyle.SetOptTitle(0)
+    ROOT.gStyle.SetOptStat(0)
+    ROOT.gStyle.SetOptFit(0)
+    return
+#===================================================================================================
+
