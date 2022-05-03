@@ -253,14 +253,17 @@ def format_upper_pad_axis(ratio=True, xlabel=None, ylabel=None, xrange=None, yra
     x_titlesize   = kwargs.get('x_titlesize'  , 0.04 if not ratio else 0)
     x_labelsize   = kwargs.get('x_labelsize'  , 0.04 if not ratio else 0)
     
+    
     if ay:
         if yrange:
             if logy and yrange[0]==0: y_min = 1.
             else: y_min = yrange[0]
             if hist:
-                if hist.InheritsFrom('THStack') or hist.InheritsFrom('RooPrintable'):
+                if hist.InheritsFrom('THStack') or hist.InheritsFrom('RooPrintable') or hist.InheritsFrom('TGraph'):
                     hist.SetMinimum(y_min)
                     hist.SetMaximum(yrange[1])
+                else:
+                    ay.SetRangeUser(y_min, yrange[1])
             else:
                 ay.SetRangeUser(y_min, yrange[1])
             
