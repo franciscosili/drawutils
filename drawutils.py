@@ -351,6 +351,72 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
         if x_labeloffset: ax.SetLabelOffset(x_labeloffset)
     return txtsize
 #===================================================================================================
+
+#===================================================================================================
+def format_canvas_2d(canv_name="", logx=False, logy=False, logz=False, **kwargs):
+
+    width   = kwargs.get('width' , 800)
+    height  = kwargs.get('height', 800)
+    lmargin = kwargs.get('lmargin', 0.12)
+    rmargin = kwargs.get('rmargin', 0.18)
+    tmargin = kwargs.get('tmargin', 0.08)
+    bmargin = kwargs.get('bmargin', 0.12)
+
+    can = ROOT.TCanvas(canv_name, "", width, height)
+    can.SetTicks(1,1)
+
+    can.SetLeftMargin  (lmargin)
+    can.SetRightMargin (rmargin)
+    can.SetBottomMargin(bmargin)
+    can.SetTopMargin   (tmargin)
+
+    if logy: can.SetLogy()
+    if logx: can.SetLogx()
+    if logz: can.SetLogz()
+
+    return can
+#===================================================================================================
+
+#===================================================================================================
+def format_axis_2d(ax=None, ay=None, az=None, xlabel=None, ylabel=None, zlabel=None, xrange=None,
+                   yrange=None, zrange=None, **kwargs):
+    
+    y_titleoffset = kwargs.get('y_titleoffset', 1.0 )
+    y_titlesize   = kwargs.get('y_titlesize'  , 0.04)
+    y_labelsize   = kwargs.get('y_labelsize'  , 0.03)
+    x_titleoffset = kwargs.get('x_titleoffset', 1.0 )
+    x_titlesize   = kwargs.get('x_titlesize'  , 0.04)
+    x_labelsize   = kwargs.get('x_labelsize'  , 0.03)
+
+    z_titlesize   = kwargs.get('z_titlesize'  , 0.04)
+    z_labelsize   = kwargs.get('z_labelsize'  , 0.03)
+    
+    
+    if ay:
+        ay.SetLabelSize  (y_labelsize)
+        ay.SetTitleOffset(y_titleoffset)
+        ay.SetTitleSize  (y_titlesize)
+        if ylabel:
+            ay.SetTitle(ylabel)
+        if yrange:
+            ay.SetRangeUser(yrange[0], yrange[1])
+        
+    if ax:
+        ax.SetLabelSize  (x_labelsize)
+        ax.SetTitleOffset(x_titleoffset)
+        ax.SetTitleSize  (x_titlesize)
+        if xlabel:
+            ax.SetTitle(xlabel)
+        if xrange:
+            ax.SetRangeUser(xrange[0], xrange[1])
+    if az:
+        az.SetLabelSize(z_labelsize)
+        az.SetTitleSize(z_titlesize)
+        if zlabel:
+            az.SetTitle(zlabel)
+        if zrange:
+            az.SetRangeUser(zrange[0], zrange[1])
+    
     return
 #===================================================================================================
 
