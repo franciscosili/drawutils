@@ -44,19 +44,19 @@ leg_positions_ratio = {
 
 #===================================================================================================
 colourdict = {
+    'black':       '#000000',
+    'blue':        '#348ABD',
+    'red':         '#A60628',
     'orange':      '#E24A33',
     'purple':      '#7A68A6',
-    'blue':        '#348ABD',
     'lblue':       '#68add5',
     'turquoise':   '#188487',
-    'red':         '#A60628',
     'pink':        '#CF4457',
     'green':       '#32b43c',
-    'lgreen':      '#88de8f',
     'yellow':      '#e2a233',
-    'lyellow':     '#f7fab3',
     'grey':        '#838283',
-    'gray':        '#838283',
+    'lgreen':      '#88de8f',
+    'lyellow':     '#f7fab3',
 }
 #===================================================================================================
 
@@ -180,25 +180,38 @@ def set_style(obj, **kwargs):
 #===================================================================================================
 
 #===================================================================================================
-def format_canvas(ratio, name='', title='', width=800, height=800, logy=False, logx=False, **kwargs):
+def format_canvas(pads2, name='', title='', logy=False, logx=False, **kwargs):
     
+    width     = kwargs.get('width', 800)
+    height    = kwargs.get('height', 800)
     lmargin_c = kwargs.get('lmargin_c', 0.13)
     rmargin_c = kwargs.get('rmargin_c', 0.03)
     bmargin_c = kwargs.get('bmargin_c', 0.13)
     tmargin_c = kwargs.get('tmargin_c', 0.05)
     
-    if ratio:
+    if pads2:
+        xmin_u = kwargs.get('xmin_u', 0.)
+        xmax_u = kwargs.get('xmax_u', 0.99)
+        xmin_d = kwargs.get('xmin_d', 0.)
+        xmax_d = kwargs.get('xmax_d', 0.99)
+        
+        ymin_u = kwargs.get('ymin_u', 0.305)
+        ymax_u = kwargs.get('ymax_u', 1.0)
+        ymin_d = kwargs.get('ymin_d', 0.01)
+        ymax_d = kwargs.get('ymax_d', 0.295)
+        
         # upper pad in case of ratio
         lmargin_u = kwargs.get('lmargin_u', lmargin_c)
         rmargin_u = kwargs.get('rmargin_u', rmargin_c)
-        bmargin_u = kwargs.get('bmargin_u', 0.005)
+        bmargin_u = kwargs.get('bmargin_u', 0.017)
         tmargin_u = kwargs.get('tmargin_u', 0.08)
         # lower pad in case of ratio
         lmargin_d = kwargs.get('lmargin_d', lmargin_c)
         rmargin_d = kwargs.get('rmargin_d', rmargin_c)
         bmargin_d = kwargs.get('bmargin_d', 0.35)
-        tmargin_d = kwargs.get('tmargin_d', 0.0054)
-    
+        tmargin_d = kwargs.get('tmargin_d', 0.02)
+        
+        
     can = ROOT.TCanvas(name, title, width, height)
     can.SetTicks(1,1)
     can.SetLeftMargin  (lmargin_c)
@@ -206,9 +219,9 @@ def format_canvas(ratio, name='', title='', width=800, height=800, logy=False, l
     can.SetRightMargin (rmargin_c)
     can.SetBottomMargin(bmargin_c)
     
-    if ratio:
-        cup   = ROOT.TPad("u", "u", 0., 0.305, 0.99, 1)
-        cdown = ROOT.TPad("d", "d", 0., 0.01 , 0.99, 0.295)
+    if pads2:
+        cup   = ROOT.TPad("u", "u", xmin_u, ymin_u, xmax_u, ymax_u)
+        cdown = ROOT.TPad("d", "d", xmin_d, ymin_d, xmax_d, ymax_d)
         
         cup.SetTicks  (1, 1)
         cdown.SetTicks(1, 1)
@@ -242,16 +255,17 @@ def format_canvas(ratio, name='', title='', width=800, height=800, logy=False, l
 #===================================================================================================
 
 #===================================================================================================
-def format_upper_pad_axis(ratio=True, xlabel=None, ylabel=None, xrange=None, yrange=None,
-                          ax=None, ay=None, logy=False, ydivisions=None, xdivisions=None, hist=None,
+def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yrange=None,
+                          ax=None, ay=None, logy=False, logx=False, ydivisions=504, xdivisions=None, hist=None,
                           **kwargs):
     
-    y_titleoffset = kwargs.get('y_titleoffset', 1.8  if not ratio else 1.1)
-    x_titleoffset = kwargs.get('x_titleoffset', 1.2  if not ratio else 1.2)
-    y_titlesize   = kwargs.get('y_titlesize'  , 0.04 if not ratio else 0.05)
-    y_labelsize   = kwargs.get('y_labelsize'  , 0.04 if not ratio else 0.05)
-    x_titlesize   = kwargs.get('x_titlesize'  , 0.04 if not ratio else 0)
-    x_labelsize   = kwargs.get('x_labelsize'  , 0.04 if not ratio else 0)
+    txtsize = calc_size(pad)*0.9
+    y_titleoffset = kwargs.get('y_titleoffset', 1.1)
+    x_titleoffset = kwargs.get('x_titleoffset', 1.2)
+    y_titlesize   = kwargs.get('y_titlesize'  , txtsize)
+    y_labelsize   = kwargs.get('y_labelsize'  , txtsize)
+    x_titlesize   = kwargs.get('x_titlesize'  , txtsize if not pads2 else 0)
+    x_labelsize   = kwargs.get('x_labelsize'  , txtsize if not pads2 else 0)
     
     
     if ay:
@@ -273,38 +287,42 @@ def format_upper_pad_axis(ratio=True, xlabel=None, ylabel=None, xrange=None, yra
         ay.SetLabelSize(y_labelsize)
         if ydivisions: ay.SetNdivisions(ydivisions)
     if ax:
+        if logx: ax.SetMoreLogLabels()
         if xrange:
-            ax.SetRangeUser(xrange[0], xrange[1])
+            if logx and xrange[0]==0: x_min = 1.
+            else: x_min = xrange[0]
+            ax.SetRangeUser(x_min, xrange[1])
         if xlabel: ax.SetTitle(xlabel)
         ax.SetLabelSize(x_labelsize)
         ax.SetTitleOffset(x_titleoffset)
         ax.SetTitleSize(x_titlesize)
         if xdivisions: ax.SetNdivisions(xdivisions)
-    return
+    return txtsize
 #===================================================================================================
 
 #===================================================================================================
-def format_lower_pad_axis(ratio=True, xlabel=None, ylabel=None, xrange=None, yrange=None,
+def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=None, logy=False, logx=False,
                           ax=None, ay=None, **kwargs):
     
+    txtsize = calc_size(pad)*0.9
     if not yrange: yrange = [0.3, 1.7]
     y_titleoffset = kwargs.get('y_titleoffset', 0.4)
-    x_titleoffset = kwargs.get('x_titleoffset', 1.10)
-    y_labeloffset = kwargs.get('y_labeloffset', 0.015)
-    x_labeloffset = kwargs.get('x_labeloffset', 0.0)
+    x_titleoffset = kwargs.get('x_titleoffset', 1.18)
+    y_labeloffset = kwargs.get('y_labeloffset', None)
+    x_labeloffset = kwargs.get('x_labeloffset', None)
     y_ticklength  = kwargs.get('y_ticklength' , None)
-    x_ticklength  = kwargs.get('x_ticklength' , 0.06)
-    y_titlesize   = kwargs.get('y_titlesize'  , 0.12)
-    y_labelsize   = kwargs.get('y_labelsize'  , 0.12)
-    x_titlesize   = kwargs.get('x_titlesize'  , 0.12)
-    x_labelsize   = kwargs.get('x_labelsize'  , 0.12)
-    xdivisions    = kwargs.get('xdivisions'   , 510)
-    ydivisions    = kwargs.get('ydivisions'   , 504)
+    x_ticklength  = kwargs.get('x_ticklength' , None)
+    y_titlesize   = kwargs.get('y_titlesize'  , txtsize)
+    y_labelsize   = kwargs.get('y_labelsize'  , txtsize)
+    x_titlesize   = kwargs.get('x_titlesize'  , txtsize)
+    x_labelsize   = kwargs.get('x_labelsize'  , txtsize)
+    xdivisions    = kwargs.get('xdivisions'   , None)
+    ydivisions    = kwargs.get('ydivisions'   , None)
 
     if ay:
         ay.SetRangeUser(yrange[0], yrange[1])
-        if ratio:  ay.SetNdivisions(ydivisions)
-        if ylabel: ay.SetTitle(ylabel)
+        if ydivisions:  ay.SetNdivisions(ydivisions)
+        if ylabel    : ay.SetTitle(ylabel)
 
         ay.CenterTitle()
         
@@ -313,20 +331,26 @@ def format_lower_pad_axis(ratio=True, xlabel=None, ylabel=None, xrange=None, yra
         ay.SetTitleOffset(y_titleoffset)
         ay.SetTitleSize(y_titlesize)
         ay.SetLabelSize(y_labelsize)
-        ay.SetLabelOffset(y_labeloffset)
+        if y_labeloffset: ay.SetLabelOffset(y_labeloffset)
 
     if ax:
-        if xrange: ax.SetRangeUser(xrange[0], xrange[1])
+        if logx: ax.SetMoreLogLabels()
+        if xrange:
+            if logx and xrange[0]==0: x_min = 1.
+            else: x_min = xrange[0]
+            ax.SetRangeUser(x_min, xrange[1])
         if xlabel: ax.SetTitle(xlabel)
         
-        ax.SetNdivisions(xdivisions)
+        if xdivisions: ax.SetNdivisions(xdivisions)
         
         if x_ticklength: ax.SetTickLength(x_ticklength)
         
         ax.SetTitleOffset(x_titleoffset)
         ax.SetTitleSize(x_titlesize)
         ax.SetLabelSize(x_labelsize)
-        ax.SetLabelOffset(x_labeloffset)
+        if x_labeloffset: ax.SetLabelOffset(x_labeloffset)
+    return txtsize
+#===================================================================================================
     return
 #===================================================================================================
 
