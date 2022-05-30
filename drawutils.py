@@ -519,6 +519,25 @@ def draw_ratio_lines(ratio, yvals, xmin=None, xmax=None):
 #===================================================================================================
 
 #===================================================================================================
+def draw_grid_lines(h):
+    line = ROOT.TLine()
+    line.SetLineColor(ROOT.kBlack)
+    line.SetLineStyle(ROOT.kDashed)
+    line.SetLineWidth(1)
+    nbinsx = h.GetNbinsX()
+    nbinsy = h.GetNbinsY()
+    minx = h.GetXaxis().GetXmin()
+    maxx = h.GetXaxis().GetXmax()
+    miny = h.GetYaxis().GetXmin()
+    maxy = h.GetYaxis().GetXmax()
+    for ix in range(1, nbinsx):
+        line.DrawLine(h.GetXaxis().GetBinUpEdge(ix), miny, h.GetXaxis().GetBinUpEdge(ix), maxy)
+    for iy in range(1, nbinsy):
+        line.DrawLine(minx, h.GetYaxis().GetBinUpEdge(iy), maxx, h.GetYaxis().GetBinUpEdge(iy))
+    return
+#===================================================================================================
+
+#===================================================================================================
 def set_default_style():
     ROOT.gStyle.SetPadTickX(1)
     ROOT.gStyle.SetPadTickY(1)
@@ -599,3 +618,14 @@ def set_atlas_style():
     return
 #===================================================================================================
 
+#===================================================================================================
+def calc_size(pad):
+        pad_width  = pad.XtoPixel(pad.GetX2())
+        pad_height = pad.YtoPixel(pad.GetY1())
+
+        if pad_width < pad_height:
+            tsize = 28.6 / pad_width
+        else:
+            tsize = 28.6 / pad_height
+        return tsize
+#===================================================================================================
