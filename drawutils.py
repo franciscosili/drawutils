@@ -256,11 +256,11 @@ def format_canvas(pads2, name='', title='', logy=False, logx=False, **kwargs):
 
 #===================================================================================================
 def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yrange=None,
-                          ax=None, ay=None, logy=False, logx=False, ydivisions=504, xdivisions=None, hist=None,
+                          ax=None, ay=None, logy=False, logx=False, ydivisions=510, xdivisions=None, hist=None,
                           **kwargs):
     
     txtsize = calc_size(pad)*0.9
-    y_titleoffset = kwargs.get('y_titleoffset', 1.1)
+    y_titleoffset = kwargs.get('y_titleoffset', 1.1 if pads2 else 1.8)
     x_titleoffset = kwargs.get('x_titleoffset', 1.2)
     y_titlesize   = kwargs.get('y_titlesize'  , txtsize)
     y_labelsize   = kwargs.get('y_labelsize'  , txtsize)
