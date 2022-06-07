@@ -266,6 +266,7 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
     y_labelsize   = kwargs.get('y_labelsize'  , txtsize)
     x_titlesize   = kwargs.get('x_titlesize'  , txtsize if not pads2 else 0)
     x_labelsize   = kwargs.get('x_labelsize'  , txtsize if not pads2 else 0)
+    y_centertitle = kwargs.get('y_centertitle', False)
     
     
     if ay:
@@ -280,7 +281,9 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
                     ay.SetRangeUser(y_min, yrange[1])
             else:
                 ay.SetRangeUser(y_min, yrange[1])
-            
+        
+        if y_centertitle: ay.CenterTitle()
+        
         if ylabel    : ay.SetTitle(ylabel)
         ay.SetTitleOffset(y_titleoffset)
         ay.SetTitleSize(y_titlesize)
