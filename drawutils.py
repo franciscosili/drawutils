@@ -304,7 +304,7 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
 #===================================================================================================
 
 #===================================================================================================
-def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=None, logy=False, logx=False,
+def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=None, logx=False,
                           ax=None, ay=None, **kwargs):
     
     txtsize = calc_size(pad)*0.9
