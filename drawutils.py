@@ -393,6 +393,7 @@ def format_axis_2d(ax=None, ay=None, az=None, xlabel=None, ylabel=None, zlabel=N
 
     z_titlesize   = kwargs.get('z_titlesize'  , 0.04)
     z_labelsize   = kwargs.get('z_labelsize'  , 0.03)
+    z_titleoffset = kwargs.get('z_titleoffset', 1.5)
     
     
     if ay:
@@ -415,6 +416,7 @@ def format_axis_2d(ax=None, ay=None, az=None, xlabel=None, ylabel=None, zlabel=N
     if az:
         az.SetLabelSize(z_labelsize)
         az.SetTitleSize(z_titlesize)
+        az.SetTitleOffset(z_titleoffset)
         if zlabel:
             az.SetTitle(zlabel)
         if zrange:
