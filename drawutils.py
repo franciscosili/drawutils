@@ -384,7 +384,7 @@ def format_canvas_2d(canv_name="", logx=False, logy=False, logz=False, **kwargs)
 def format_axis_2d(ax=None, ay=None, az=None, xlabel=None, ylabel=None, zlabel=None, xrange=None,
                    yrange=None, zrange=None, **kwargs):
     
-    y_titleoffset = kwargs.get('y_titleoffset', 1.0 )
+    y_titleoffset = kwargs.get('y_titleoffset', 1.2 )
     y_titlesize   = kwargs.get('y_titlesize'  , 0.04)
     y_labelsize   = kwargs.get('y_labelsize'  , 0.03)
     x_titleoffset = kwargs.get('x_titleoffset', 1.0 )
