@@ -426,39 +426,51 @@ def format_axis_2d(ax=None, ay=None, az=None, xlabel=None, ylabel=None, zlabel=N
 #===================================================================================================
 
 #===================================================================================================
-def get_yrange(hists, get_min=False, get_max=False, lim_value=None):
+def get_yrange(hists, get_min=False, get_max=False, lim_value=None, werror=False):
+    if not lim_value:
+        lim_value = float('inf')
+        if get_min: lim_value = -lim_value
+
+    def _getmin(h):
+        if werror:
+            _mins = []
+            for b in range(1, h.GetNbinsX()+1):
+                cont = h.GetBinContent(b)
+                err  = h.GetBinError(b)
+                if cont-err > lim_value:
+                    _mins.append(cont-err)
+            _min = min(_mins)
+            return _min
+        else:
+            return h.GetMinimum(lim_value)
+    def _getmax(h):
+        if werror:
+            _maxs = []
+            for b in range(1, h.GetNbinsX()+1):
+                cont = h.GetBinContent(b)
+                err  = h.GetBinError(b)
+                if cont+err < lim_value:
+                    _maxs.append(cont+err)
+            _max = max(_maxs)
+            return _max
+        else:
+            return h.GetMaximum(lim_value)
+
+    def _get_maxmins(func, hs):
+        elements = []
+        try:
+            for h in hs:
+                elements.append(func(h))
+        except:
+            for h in hs.values():
+                elements.append(func(h))
+        return elements
+
+
     if get_max:
-        maxs = []
-        try:
-            for h in hists:
-                if lim_value is not None:
-                    maxs.append(h.GetMaximum(lim_value))
-                else:
-                    maxs.append(h.GetMaximum())
-        except:
-            for h in hists.values():
-                if lim_value is not None:
-                    maxs.append(h.GetMaximum(lim_value))
-                else:
-                    maxs.append(h.GetMaximum())
-        maximum = max(maxs)
-        return maximum
+        return max(_get_maxmins(_getmax, hists))
     if get_min:
-        mins = []
-        try:
-            for h in hists:
-                if lim_value is not None:
-                    mins.append(h.GetMinimum(lim_value))
-                else:
-                    mins.append(h.GetMinimum())
-        except:
-            for h in hists.values():
-                if lim_value is not None:
-                    mins.append(h.GetMinimum(lim_value))
-                else:
-                    mins.append(h.GetMinimum())
-        minimum = min(mins)
-        return minimum
+        return min(_get_maxmins(_getmin, hists))
 #===================================================================================================
 
 #===================================================================================================
