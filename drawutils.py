@@ -122,7 +122,7 @@ def set_style(obj, **kwargs):
         obj (*): object to which the style attributes are applied
     """
 
-    # check if hist or graph
+    # check if hist or graph 
     is_hist = obj.InheritsFrom('TH1')
 
     color = kwargs.get('color', ROOT.kBlack)
@@ -495,6 +495,19 @@ def atlas_label(x, y, size=0.04, msg="Internal", ndc=True):
         lat.DrawLatexNDC(x, y, "#bf{#it{ATLAS}} "+msg)
     else:
         lat.DrawLatex(x, y, "#bf{#it{ATLAS}} "+msg)
+    return
+#===================================================================================================
+
+#===================================================================================================
+def lumi_label(x, y, lumi, comE, size=0.035, ndc=True):
+    lat = ROOT.TLatex()
+    lat.SetTextFont(42)
+    lat.SetTextSize(size)
+    
+    if ndc:
+        lat.DrawLatexNDC(x, y, '#sqrt{s} = %.1f TeV, %.1f fb^{-1}' % (comE, lumi))
+    else:
+        lat.DrawLatex(x, y, '#sqrt{s} = %.1f TeV, %.1f fb^{-1}' % (comE, lumi))
     return
 #===================================================================================================
 
