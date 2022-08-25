@@ -25,19 +25,19 @@ leg_positions_ratio = {
         "xmin": 0.15,
         "xmax": 0.59,
         "ymin": 0.74,
-        "ymax": 0.90,
+        "ymax": 0.86,
     },
     "right": {
         "xmin": 0.50,
         "xmax": 0.94,
         "ymin": 0.74,
-        "ymax": 0.90,
+        "ymax": 0.86,
     },
     "top": {
         "xmin": 0.15,
         "xmax": 0.59,
         "ymin": 0.74,
-        "ymax": 0.90,
+        "ymax": 0.86,
     },
 }
 
