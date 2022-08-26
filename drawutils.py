@@ -182,12 +182,17 @@ def set_style(obj, **kwargs):
 #===================================================================================================
 def format_canvas(pads2, name='', title='', logy=False, logx=False, **kwargs):
     
-    width     = kwargs.get('width', 800)
-    height    = kwargs.get('height', 800)
-    lmargin_c = kwargs.get('lmargin_c', 0.13)
-    rmargin_c = kwargs.get('rmargin_c', 0.03)
-    bmargin_c = kwargs.get('bmargin_c', 0.13)
-    tmargin_c = kwargs.get('tmargin_c', 0.05)
+    width       = kwargs.get('width', 800)
+    height      = kwargs.get('height', 800)
+    second_axis = kwargs.get('second_axis', False)
+    lmargin_c   = kwargs.get('lmargin_c', 0.13)
+    bmargin_c   = kwargs.get('bmargin_c', 0.13)
+    tmargin_c   = kwargs.get('tmargin_c', 0.05)
+    
+    if second_axis:
+        rmargin_c   = kwargs.get('rmargin_c', 0.07)
+    else:
+        rmargin_c   = kwargs.get('rmargin_c', 0.03)
     
     if pads2:
         xmin_u = kwargs.get('xmin_u', 0.)
@@ -260,13 +265,15 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
                           **kwargs):
     
     txtsize = calc_size(pad)*0.9
-    y_titleoffset = kwargs.get('y_titleoffset', 1.1 if pads2 else 1.8)
-    x_titleoffset = kwargs.get('x_titleoffset', 1.2)
-    y_titlesize   = kwargs.get('y_titlesize'  , txtsize)
-    y_labelsize   = kwargs.get('y_labelsize'  , txtsize)
-    x_titlesize   = kwargs.get('x_titlesize'  , txtsize if not pads2 else 0)
-    x_labelsize   = kwargs.get('x_labelsize'  , txtsize if not pads2 else 0)
-    y_centertitle = kwargs.get('y_centertitle', False)
+    y_titleoffset  = kwargs.get('y_titleoffset' , 1.1 if pads2 else 1.8)
+    x_titleoffset  = kwargs.get('x_titleoffset' , 1.2)
+    y_titlesize    = kwargs.get('y_titlesize'   , txtsize)
+    y_labelsize    = kwargs.get('y_labelsize'   , txtsize)
+    x_titlesize    = kwargs.get('x_titlesize'   , txtsize if not pads2 else 0)
+    x_labelsize    = kwargs.get('x_labelsize'   , txtsize if not pads2 else 0)
+    y_centertitle  = kwargs.get('y_centertitle' , False)
+    # sec_axis       = kwargs.get('sec_axis'      , None) # when it is not none, its a histogram/tgraph
+    # sec_axis_label = kwargs.get('sec_axis_label', None) # when it is not none, its a histogram/tgraph
     
     
     if ay:
@@ -284,6 +291,10 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
         
         if y_centertitle: ay.CenterTitle()
         
+        # if sec_axis:
+        #     pad.SetTicks(1, 0)
+        #     format_second_axis(sec_axis, yrange, sec_axis_label)
+ 
         if ylabel    : ay.SetTitle(ylabel)
         ay.SetTitleOffset(y_titleoffset)
         ay.SetTitleSize(y_titlesize)
@@ -309,18 +320,19 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
     
     txtsize = calc_size(pad)*0.9
     if not yrange: yrange = [0.3, 1.7]
-    y_titleoffset = kwargs.get('y_titleoffset', 0.4)
-    x_titleoffset = kwargs.get('x_titleoffset', 1.18)
-    y_labeloffset = kwargs.get('y_labeloffset', None)
-    x_labeloffset = kwargs.get('x_labeloffset', None)
-    y_ticklength  = kwargs.get('y_ticklength' , None)
-    x_ticklength  = kwargs.get('x_ticklength' , None)
-    y_titlesize   = kwargs.get('y_titlesize'  , txtsize)
-    y_labelsize   = kwargs.get('y_labelsize'  , txtsize)
-    x_titlesize   = kwargs.get('x_titlesize'  , txtsize)
-    x_labelsize   = kwargs.get('x_labelsize'  , txtsize)
-    xdivisions    = kwargs.get('xdivisions'   , None)
-    ydivisions    = kwargs.get('ydivisions'   , None)
+    y_titleoffset  = kwargs.get('y_titleoffset', 0.4)
+    x_titleoffset  = kwargs.get('x_titleoffset', 1.18)
+    y_labeloffset  = kwargs.get('y_labeloffset', None)
+    x_labeloffset  = kwargs.get('x_labeloffset', None)
+    y_ticklength   = kwargs.get('y_ticklength' , None)
+    x_ticklength   = kwargs.get('x_ticklength' , None)
+    y_titlesize    = kwargs.get('y_titlesize'  , txtsize)
+    y_labelsize    = kwargs.get('y_labelsize'  , txtsize)
+    x_titlesize    = kwargs.get('x_titlesize'  , txtsize)
+    x_labelsize    = kwargs.get('x_labelsize'  , txtsize)
+    xdivisions     = kwargs.get('xdivisions'   , None)
+    ydivisions     = kwargs.get('ydivisions'   , None)
+    sec_axis       = kwargs.get('sec_axis'     , None)
 
     if ay:
         ay.SetRangeUser(yrange[0], yrange[1])
@@ -328,6 +340,9 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
         if ylabel    : ay.SetTitle(ylabel)
 
         ay.CenterTitle()
+        
+        if sec_axis:
+            pad.SetTicks(1, 0)
         
         if y_ticklength: ay.SetTickLength(y_ticklength)
         
@@ -423,6 +438,32 @@ def format_axis_2d(ax=None, ay=None, az=None, xlabel=None, ylabel=None, zlabel=N
             az.SetRangeUser(zrange[0], zrange[1])
     
     return
+#===================================================================================================
+
+#===================================================================================================
+def format_second_axis(pad, ax, yrange, axisrange, label, **kwargs):
+    
+    txtsize = calc_size(pad)*0.9
+    y_titleoffset  = kwargs.get('y_titleoffset', 0.4)
+    y_labeloffset  = kwargs.get('y_labeloffset', None)
+    y_ticklength   = kwargs.get('y_ticklength' , None)
+    y_titlesize    = kwargs.get('y_titlesize'  , txtsize)
+    y_labelsize    = kwargs.get('y_labelsize'  , txtsize)
+    
+    x_pos       = ax.GetXmax()
+    second_axis = ROOT.TGaxis(x_pos, yrange[0],
+                              x_pos, yrange[1],
+                              axisrange[0], axisrange[1], 510, "+L")
+    second_axis.SetLineColor(ROOT.kRed)
+    second_axis.SetLabelColor(ROOT.kRed)
+    second_axis.SetTitleColor(ROOT.kRed)
+    second_axis.SetTitleOffset(y_titleoffset)
+    second_axis.SetTitleSize(y_titlesize)
+    second_axis.SetLabelSize(y_labelsize)
+    if y_ticklength: second_axis.SetTickLength(y_ticklength)
+    if y_labeloffset: second_axis.SetLabelOffset(y_labeloffset)
+    second_axis.SetTitle(label)
+    return second_axis
 #===================================================================================================
 
 #===================================================================================================
