@@ -275,7 +275,6 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
     # sec_axis       = kwargs.get('sec_axis'      , None) # when it is not none, its a histogram/tgraph
     # sec_axis_label = kwargs.get('sec_axis_label', None) # when it is not none, its a histogram/tgraph
     
-    
     if ay:
         if yrange:
             if logy and yrange[0]==0: y_min = 1.
@@ -468,7 +467,7 @@ def format_second_axis(pad, ax, yrange, axisrange, label, **kwargs):
 
 #===================================================================================================
 def get_yrange(hists, get_min=False, get_max=False, lim_value=None, werror=False):
-    if not lim_value:
+    if lim_value is None:
         lim_value = float('inf')
         if get_min: lim_value = -lim_value
 
@@ -506,7 +505,6 @@ def get_yrange(hists, get_min=False, get_max=False, lim_value=None, werror=False
             for h in hs.values():
                 elements.append(func(h))
         return elements
-
 
     if get_max:
         return max(_get_maxmins(_getmax, hists))
