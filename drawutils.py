@@ -1,22 +1,23 @@
 import ROOT
+from seaborn import color_palette
 
 leg_positions = {
     "left": {
         "xmin": 0.15,
         "xmax": 0.57,
-        "ymin": 0.80,
+        "ymin": 0.76,
         "ymax": 0.93,
     },
     "right": {
         "xmin": 0.51,
         "xmax": 0.93,
-        "ymin": 0.80,
+        "ymin": 0.76,
         "ymax": 0.93,
     },
     "top": {
         "xmin": 0.15,
         "xmax": 0.57,
-        "ymin": 0.80,
+        "ymin": 0.76,
         "ymax": 0.93,
     },
 }
@@ -58,6 +59,12 @@ colourdict = {
     'lgreen':      '#88de8f',
     'lyellow':     '#f7fab3',
 }
+#===================================================================================================
+
+#===================================================================================================
+def get_colors_seaborn(number_colors, iel):
+    colors = color_palette('muted', number_colors)
+    return colors.as_hex()[iel]
 #===================================================================================================
 
 #===================================================================================================
@@ -697,4 +704,36 @@ def calc_size(pad):
         else:
             tsize = 28.6 / pad_height
         return tsize
+#===================================================================================================
+
+#===================================================================================================
+def draw_fitresult(fitfunc, xmin, xmax, ymin, ymax, size=0.02):
+    
+    pave = ROOT.TPaveText(xmin, ymin, xmax, ymax, "NDC NB")
+    pave.SetFillColorAlpha(ROOT.kWhite, 0.0)
+    pave.SetLineColorAlpha(ROOT.kWhite, 0.0)
+    pave.SetTextFont(42)
+    pave.SetTextColor(ROOT.kBlack)
+    pave.SetTextSize(size)
+    pave.SetTextAlign(11)
+    
+    chi2 = fitfunc.GetChisquare()
+    ndf  = fitfunc.GetNDF()
+    lines = []
+    lines.append('{:11s} = {:.2f} / {}'.format('Chi2 / NDF', chi2, ndf))
+    for ipar in range(fitfunc.GetNpar()):
+        parname  = fitfunc.GetParName(ipar)
+        parvalue = fitfunc.GetParameter(ipar)
+        parerror = fitfunc.GetParError(ipar)
+        if parvalue < 0.01:
+            precision = 4
+        else:
+            precision = 2            
+        this_line = f'{parname:10} = {parvalue:.2} +/- {parerror:.2}'
+        lines.append(this_line)
+    
+    for this_line in lines:
+        pave.AddText(this_line)
+    
+    return pave
 #===================================================================================================
