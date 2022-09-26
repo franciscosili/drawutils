@@ -707,7 +707,7 @@ def calc_size(pad):
 #===================================================================================================
 
 #===================================================================================================
-def draw_fitresult(fitfunc, xmin, xmax, ymin, ymax, size=0.02):
+def draw_fitresult(xmin, xmax, ymin, ymax, props, size=0.02):
     
     pave = ROOT.TPaveText(xmin, ymin, xmax, ymax, "NDC NB")
     pave.SetFillColorAlpha(ROOT.kWhite, 0.0)
@@ -717,23 +717,47 @@ def draw_fitresult(fitfunc, xmin, xmax, ymin, ymax, size=0.02):
     pave.SetTextSize(size)
     pave.SetTextAlign(11)
     
-    chi2 = fitfunc.GetChisquare()
-    ndf  = fitfunc.GetNDF()
-    lines = []
-    lines.append('{:11s} = {:.2f} / {}'.format('Chi2 / NDF', chi2, ndf))
-    for ipar in range(fitfunc.GetNpar()):
-        parname  = fitfunc.GetParName(ipar)
-        parvalue = fitfunc.GetParameter(ipar)
-        parerror = fitfunc.GetParError(ipar)
-        if parvalue < 0.01:
-            precision = 4
-        else:
-            precision = 2            
-        this_line = f'{parname:10} = {parvalue:.2} +/- {parerror:.2}'
-        lines.append(this_line)
+    if isinstance(props, dict):
+        lines = []
+        lines.append('{:11s} = {:.2f} / {}'.format('Chi2 / NDF', props['chi2'], props['ndof']))
+
+        for propname, prop in props.items():
+            if propname == 'variables':
+                for ivar in range(prop.getSize()):
+                    par = prop.at(ivar)
+                    parname = par.getTitle().Data()
+                    parvalue = par.getVal()
+                    parerror = par.getError()
+
+                    if parerror < 0.01:
+                        precision = 4
+                    else:
+                        precision = 2
+                    this_line = f'{parname:10} = {parvalue:.{precision}f} +/- {parerror:.{precision}f}'
+                    lines.append(this_line)
+
+        for this_line in lines:
+            pave.AddText(this_line)
     
-    for this_line in lines:
-        pave.AddText(this_line)
+    elif props.InheritsFrom('TF1'):
+        chi2 = props.GetChisquare()
+        ndf  = props.GetNDF()
+        lines = []
+        lines.append('{:11s} = {:.2f} / {}'.format('Chi2 / NDF', chi2, ndf))
+        for ipar in range(props.GetNpar()):
+            parname  = props.GetParName(ipar)
+            parvalue = props.GetParameter(ipar)
+            parerror = props.GetParError(ipar)
+            if parvalue < 0.01:
+                precision = 4
+            else:
+                precision = 2            
+            this_line = f'{parname:10} = {parvalue:.{precision}f} +/- {parerror:.{precision}f}'
+            lines.append(this_line)
+        
+        for this_line in lines:
+            pave.AddText(this_line)
+   
     
     return pave
 #===================================================================================================
