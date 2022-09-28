@@ -719,7 +719,12 @@ def draw_fitresult(xmin, xmax, ymin, ymax, props, size=0.02):
     
     if isinstance(props, dict):
         lines = []
-        lines.append('{:11s} = {:.2f} / {}'.format('Chi2 / NDF', props['chi2'], props['ndof']))
+        
+        if 'ndof' in props:
+            lines.append('{:11s} = {:.2f} / {} = {:.3f}'.format('Chi2 / NDF', props['chi2'], props['ndof'], props['chi2_o_ndof']))
+            lines.append('{:11s} = {}'.format('p-value', props['pvalue']))
+        else:
+            lines.append('{:11s} = {:.2f}'.format('Chi2', props['chi2']))
 
         for propname, prop in props.items():
             if propname == 'variables':
