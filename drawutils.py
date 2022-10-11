@@ -309,9 +309,19 @@ def format_upper_pad_axis(pad, pads2, xlabel=None, ylabel=None, xrange=None, yra
     if ax:
         if logx: ax.SetMoreLogLabels()
         if xrange:
-            if logx and xrange[0]==0: x_min = 1.
+            if logx and xrange[0]==0:
+                if xrange[1]<=1:
+                    x_min = 1e-5
+                else:            x_min = 1.
             else: x_min = xrange[0]
             ax.SetRangeUser(x_min, xrange[1])
+        else:
+            if logx and ax.GetXmin()==0.:
+                if ax.GetXmax()<=1: x_min = 0.000001
+                else:               x_min = 1.
+            else: x_min = ax.GetXmin()
+            
+            ax.SetRange(1, ax.GetNbins())
         if xlabel: ax.SetTitle(xlabel)
         ax.SetLabelSize(x_labelsize)
         ax.SetTitleOffset(x_titleoffset)
@@ -343,7 +353,9 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
 
     if ay:
         if hist:
-            if hist.InheritsFrom('THStack') or hist.InheritsFrom('RooPrintable') or hist.InheritsFrom('TGraph'):
+            if hist.Class() == 'TH1D' or hist.Class() == 'TH1F':
+                ay.SetRangeUser(yrange[0], yrange[1])
+            elif hist.InheritsFrom('THStack') or hist.InheritsFrom('RooPrintable') or hist.InheritsFrom('TGraph'):
                 hist.SetMinimum(yrange[0])
                 hist.SetMaximum(yrange[1])
             else:
