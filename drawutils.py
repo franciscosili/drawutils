@@ -358,8 +358,8 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
             elif hist.InheritsFrom('THStack') or hist.InheritsFrom('RooPrintable') or hist.InheritsFrom('TGraph'):
                 hist.SetMinimum(yrange[0])
                 hist.SetMaximum(yrange[1])
-            else:
-                ay.SetRangeUser(yrange[0], yrange[1])
+        else:
+            ay.SetRangeUser(yrange[0], yrange[1])
         # ay.SetRangeUser(yrange[0], yrange[1])
         if ydivisions: ay.SetNdivisions(ydivisions)
         if ylabel    : ay.SetTitle(ylabel)
