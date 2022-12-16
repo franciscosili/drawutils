@@ -763,6 +763,15 @@ def draw_fitresult(xmin, xmax, ymin, ymax, props, size=0.02):
         else:
             lines.append('{:11s} = {:.2f}'.format('Chi2', props['chi2']))
 
+        if 'nsig' in props and props['nsig'] is not None:
+            try:
+                lines.append('{:11s} = {:.4f} #pm {:.5f},   N_{{sig}}/#sigma_{{N_{{sig}}}} = {}'.format('N_{sig}', props['nsig'], props['nsigerr'], props['nsig']/props['nsigerr']))
+            except ZeroDivisionError:
+                lines.append('{:11s} = {:.4f} #pm {:.5f},   N_{{sig}}/#sigma_{{N_{{sig}}}} = {}'.format('N_{sig}', props['nsig'], props['nsigerr'], 0.))
+        if 'nbkg' in props and props['nbkg'] is not None:
+            lines.append('{:11s} = {:.4f} #pm {:.5f}'.format('N_{bkg}', props['nbkg'], props['nbkgerr']))
+
+
         for propname, prop in props.items():
             if propname == 'variables':
                 for ivar in range(prop.getSize()):
@@ -777,6 +786,7 @@ def draw_fitresult(xmin, xmax, ymin, ymax, props, size=0.02):
                         precision = 2
                     this_line = f'{parname:10} = {parvalue:.{precision}f} +/- {parerror:.{precision}f}'
                     lines.append(this_line)
+            
 
         for this_line in lines:
             pave.AddText(this_line)
