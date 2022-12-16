@@ -508,6 +508,9 @@ def get_yrange(hists, get_min=False, get_max=False, lim_value=None, werror=False
         lim_value = float('inf')
         if get_min: lim_value = -lim_value
 
+    if not (isinstance(hists, list) or isinstance(hists, dict)):
+        hists = [hists, ]
+
     def _getmin(h):
         if werror:
             _mins = []
@@ -546,7 +549,11 @@ def get_yrange(hists, get_min=False, get_max=False, lim_value=None, werror=False
     if get_max:
         return max(_get_maxmins(_getmax, hists))
     if get_min:
-        return min(_get_maxmins(_getmin, hists))
+        mins = sorted(_get_maxmins(_getmin, hists))
+        if lim_value == -float('inf'):
+            return mins[0], mins[1]
+        else:
+            return mins[0]
 #===================================================================================================
 
 #===================================================================================================
