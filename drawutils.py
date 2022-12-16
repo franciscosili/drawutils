@@ -350,10 +350,17 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
     ydivisions     = kwargs.get('ydivisions'   , None)
     sec_axis       = kwargs.get('sec_axis'     , None)
     hist           = kwargs.get('hist'         , None)
+    gridx          = kwargs.get('gridx'        , False)
+    gridy          = kwargs.get('gridy'        , False)
+
+    if gridx:
+        pad.SetGridx()
+    if gridy:
+        pad.SetGridy()
 
     if ay:
         if hist:
-            if hist.Class() == 'TH1D' or hist.Class() == 'TH1F':
+            if hist.Class() == 'TH1D' or hist.Class() == 'TH1F' or hist.Class() == 'TH1':
                 ay.SetRangeUser(yrange[0], yrange[1])
             elif hist.InheritsFrom('THStack') or hist.InheritsFrom('RooPrintable') or hist.InheritsFrom('TGraph'):
                 hist.SetMinimum(yrange[0])
@@ -376,12 +383,16 @@ def format_lower_pad_axis(pad, xlabel=None, ylabel=None, xrange=None, yrange=Non
         ay.SetLabelSize(y_labelsize)
         if y_labeloffset: ay.SetLabelOffset(y_labeloffset)
 
+
     if ax:
         if logx: ax.SetMoreLogLabels()
-        if xrange:
+        if xrange:    
             if logx and xrange[0]==0: x_min = 1.
             else: x_min = xrange[0]
-            ax.SetRangeUser(x_min, xrange[1])
+            if hist and hist.InheritsFrom('TGraph'):
+                ax.SetLimits(x_min, xrange[1])
+            else:
+                ax.SetRangeUser(x_min, xrange[1])
         if xlabel: ax.SetTitle(xlabel)
         
         if xdivisions: ax.SetNdivisions(xdivisions)
